@@ -1,38 +1,21 @@
 ---
 driver:
-  name: openstack
-openstack:
-  keyfile: /ssh/id_rsa
-  instances:
-    - name: molecule-hostname-ubuntu
-      image: 'Ubuntu 16.04 (Xenial Xerus)'
-      flavor: 1C-4GB-20GB
-      sshuser: ubuntu
-      ssh_timeout: 120
-      ansible_groups:
-        - molecule
-        - ubuntu
-      security_groups:
-        - molecule
-      ip_pool: public
-      private: true
-      network: network-molecule
+  name: docker
+docker:
+  containers:
+    - name: molecule-ubuntu-hostname
+      image: ubuntu
+      image_version: 16.04
+      cap_add:
+        - SYS_ADMIN
 ansible:
   playbook: playbook.yml
   timeout: 120
 dependency:
   name: galaxy
   requirements_file: test-requirements.yml
-verifier:
-  name: testinfra
-  enabled: False
 molecule:
   ignore_paths:
     - .git
     - .molecule
     - .tox
-  test:
-    sequence:
-      - destroy
-      - create
-      - converge
